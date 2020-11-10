@@ -36,7 +36,8 @@ build_only=false
 run_only=false
 app_dir="mediapipe/examples/desktop"
 bin_dir="bazel-bin"
-declare -a default_bazel_flags=(build -c opt --define MEDIAPIPE_DISABLE_GPU=1)
+#declare -a default_bazel_flags=(build -c opt --define MEDIAPIPE_DISABLE_GPU=1)
+declare -a default_bazel_flags=(build -c opt --copt -DMESA_EGL_NO_X11_HEADERS --copt -DEGL_NO_X11)
 
 while [[ -n $1 ]]; do
   case $1 in
@@ -68,13 +69,17 @@ for app in ${apps}; do
   if [[ -d "${app}" ]]; then
     target_name=${app##*/}
     if [[ "${target_name}" == "autoflip" ||
+          "${target_name}" == "face_mesh" ||
+          "${target_name}" == "hair_segmentation" ||
           "${target_name}" == "hello_world" ||
+          "${target_name}" == "iris_tracking" ||
           "${target_name}" == "media_sequence" ||
           "${target_name}" == "template_matching" ||
           "${target_name}" == "youtube8m" ]]; then
       continue
     fi
-    target="${app}:${target_name}_cpu"
+    #target="${app}:${target_name}_cpu"
+    target="${app}:${target_name}_gpu"
 
     echo "=== Target: ${target}"
 
@@ -83,7 +88,8 @@ for app in ${apps}; do
       bazel_flags+=(${target})
 
       bazel "${bazel_flags[@]}"
-      cp -f "${bin_dir}/${app}/"*"_cpu" "${out_dir}"
+      #cp -f "${bin_dir}/${app}/"*"_cpu" "${out_dir}"
+      cp -f "${bin_dir}/${app}/"*"_gpu" "${out_dir}"
     fi
     if [[ $build_only == false ]]; then
       if  [[ ${target_name} == "object_tracking" ]]; then
@@ -96,10 +102,15 @@ for app in ${apps}; do
       if [[ ${target_name} == "iris_tracking" ||
             ${target_name} == "upper_body_pose_tracking" ]]; then
         graph_suffix="cpu"
+      elif [[ ${target_name} == "hand_tracking" ]]; then
+        graph_suffix="mobile"
       else
-        graph_suffix="desktop_live"
+        #graph_suffix="desktop_live"
+	graph_suffix="mobile"
       fi
-      GLOG_logtostderr=1 "${out_dir}/${target_name}_cpu" \
+      #GLOG_logtostderr=1 "${out_dir}/${target_name}_cpu" \
+      #  --calculator_graph_config_file=mediapipe/graphs/"${graph_name}_${graph_suffix}.pbtxt"
+      GLOG_logtostderr=1 "${out_dir}/${target_name}_gpu" \
         --calculator_graph_config_file=mediapipe/graphs/"${graph_name}_${graph_suffix}.pbtxt"
     fi
   fi
