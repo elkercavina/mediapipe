@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Log.d(TAG, "onCreate");
     setContentView(getContentViewLayoutResId());
 
     try {
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
+    Log.d(TAG, "onResume");
     converter = new ExternalTextureConverter(eglManager.getContext());
     converter.setFlipY(
         applicationInfo.metaData.getBoolean("flipFramesVertically", FLIP_FRAMES_VERTICALLY));
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onPause() {
     super.onPause();
+    Log.d(TAG, "onPause");
     converter.close();
 
     // Hide preview display until we re-open the camera again.
@@ -143,10 +146,12 @@ public class MainActivity extends AppCompatActivity {
   public void onRequestPermissionsResult(
       int requestCode, String[] permissions, int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    Log.d(TAG, "onRequestPermissionResult");
     PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
   protected void onCameraStarted(SurfaceTexture surfaceTexture) {
+    Log.d(TAG, "onCameraStarted");
     previewFrameTexture = surfaceTexture;
     // Make the display view visible to start showing the preview. This triggers the
     // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
@@ -180,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     // (Re-)Compute the ideal size of the camera-preview display (the area that the
     // camera-preview frames get rendered onto, potentially with scaling and rotation)
     // based on the size of the SurfaceView that contains the display.
+    Log.d(TAG, "onPreviewDisplaySurfaceChanged");
     Size viewSize = computeViewSize(width, height);
     Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
     boolean isCameraRotated = cameraHelper.isCameraRotated();

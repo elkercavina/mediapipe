@@ -242,11 +242,12 @@ http_archive(
 android_ndk_repository(
     name = "androidndk",
     path = "/home/arca/Android/Sdk/ndk/21.3.6528147",
+    api_level = 22, # android 5.1 - lollipop
 )
 
 android_sdk_repository(
     name = "androidsdk",
-    path = "/home/arca/Android/Sdk/ndk/21.3.6528147",
+    path = "/home/arca/Android/Sdk",
 )
 
 # iOS basic build deps.
