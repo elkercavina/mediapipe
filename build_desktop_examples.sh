@@ -74,6 +74,7 @@ for app in ${apps}; do
           "${target_name}" == "hello_world" ||
           "${target_name}" == "iris_tracking" ||
           "${target_name}" == "media_sequence" ||
+          "${target_name}" == "object_detection_3d" ||
           "${target_name}" == "template_matching" ||
           "${target_name}" == "youtube8m" ]]; then
       continue
@@ -99,7 +100,9 @@ for app in ${apps}; do
       else
         graph_name="${target_name}/${target_name}"
       fi
-      if [[ ${target_name} == "iris_tracking" ||
+      if [[ ${target_name} == "holistic_tracking" ||
+            ${target_name} == "iris_tracking" ||
+            ${target_name} == "pose_tracking" ||
             ${target_name} == "upper_body_pose_tracking" ]]; then
         graph_suffix="cpu"
       elif [[ ${target_name} == "hand_tracking" ]]; then
